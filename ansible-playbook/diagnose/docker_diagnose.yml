@@ -1,0 +1,43 @@
+---
+- name: Copy scripts.tar.gz to Remote Server
+  ansible.builtin.copy:
+    src: /home/ansible/192.168.16.36/home/dudu/scripts.tar.gz
+    dest: /tmp/
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+  tags:
+  - copy
+
+- name: Extract scripts.tar.gz file
+  command: tar -zxvf scripts.tar.gz scripts/ chdir=/tmp/
+  args:
+    warn: false
+  register: extract
+
+- name: Run Docker Scripts
+  command: /bin/bash run.sh chdir=/tmp/scripts/docker
+  register: run
+
+- name: Check Result File
+  ansible.builtin.stat:
+    path: /tmp/scripts/docker/stdout.txt
+  register: result_file
+
+- name: Check Verbose File
+  ansible.builtin.stat:
+    path: /tmp/scripts/docker/verbose
+  register: verbose_file
+
+- name: Fetch Result File
+  ansible.builtin.fetch:
+    src: /tmp/scripts/docker/stdout.txt
+    dest: /home/ansible/ansible-playbook/diagnose/result
+  when: result_file.stat.exists
+
+- name: Fetch Verbose File
+  ansible.builtin.fetch:
+    src: /tmp/scripts/docker/verbose
+    dest: /home/ansible/ansible-playbook/diagnose/result
+  when: verbose_file.stat.exists
+...

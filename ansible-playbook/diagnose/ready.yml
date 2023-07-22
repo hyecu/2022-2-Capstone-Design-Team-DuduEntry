@@ -1,0 +1,53 @@
+---
+- name: Ready to run playbook (36)
+  hosts: 192.168.16.36
+  become: yes
+
+  tasks:
+    - name: Remove /tmp/scripts /tmp/scripts.tar.gz
+      command: rm -rf /tmp/scripts /tmp/scripts.tar.gz
+      args:
+        warn: false
+    
+    - name: Remove stdout.txt verbose .xlsx files for docker
+      command: rm -rf stdout.txt verbose *.xlsx chdir=/home/dudu/scripts/docker
+      args:
+        warn: false
+
+    - name: Remove stdout.txt verbose .xlsx files for kubernetes
+      command: rm -rf stdout.txt verbose *.xlsx chdir=/home/dudu/scripts/kubernetes
+      args:
+        warn: false
+
+    - name: Remove stdout.txt verbose .xlsx files for podman
+      command: rm -rf stdout.txt verbose *.xlsx chdir=/home/dudu/scripts/podman
+      args:
+        warn: false
+    
+    - name: Remove /home/dudu/scripts.tar.gz
+      command: rm -rf scripts.tar.gz chdir=/home/dudu/
+      args:
+        warn: false
+    
+    - name: Archive /home/dudu/scripts
+      command: tar -zcvf scripts.tar.gz scripts chdir=/home/dudu
+      args:
+        warn: false
+    
+    - name: Fetch scripts.tar.gz
+      ansible.builtin.fetch:
+        src: /home/dudu/scripts.tar.gz
+        dest: /home/ansible/
+      tags:
+      - fetch
+    
+- name: Ready to run playbook (all)
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Remove /tmp/scripts /tmp/scripts.tar.gz
+      command: rm -rf /tmp/scripts /tmp/scripts.tar.gz
+      args:
+        warn: false
+...

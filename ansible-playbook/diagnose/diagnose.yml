@@ -1,0 +1,62 @@
+---
+- name: Determine whether 'Docker', 'Kubernetes', 'Podman' services exist in the system and diagnose
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Check if the Docker service exists
+      ansible.builtin.stat:
+        path: /usr/bin/docker
+      register: docker
+
+    - name: Run playbook for diagnose Docker service
+      ansible.builtin.include_tasks: docker_diagnose.yml
+      when: docker.stat.exists
+
+    - name: Check if the Kubernetes service exists
+      ansible.builtin.stat:
+        path: /usr/bin/kubectl
+      register: kubernetes
+
+    - name: Run playbook for diagnose Kubernetes service
+      ansible.builtin.include_tasks: kubernetes_diagnose.yml
+      when: kubernetes.stat.exists
+
+    - name: Check if the Podman service exists
+      ansible.builtin.stat:
+        path: /usr/bin/podman
+      register: podman
+
+    - name: Run playbook for diagnose Podman service
+      ansible.builtin.include_tasks: podman_diagnose.yml
+      when: podman.stat.exists
+
+- name: Create Result Visualization
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create <HostIP>_result.xlsx excel files
+      command: python3 /home/ansible/ansible-playbook/diagnose/visualization/Excel.py
+      args:
+        warn: false
+
+    - name: Create <HostIP>_verbose.xlsx excel files
+      command: python3 /home/ansible/ansible-playbook/diagnose/visualization/VExcel.py
+      args:
+        warn: false
+
+    - name: Create .html chart files
+      command: python3 /home/ansible/ansible-playbook/diagnose/visualization/Chart.py
+      args:
+        warn: false
+
+    - name: Move verbose file and remove tmp directory by result.sh
+      command: /bin/bash result.sh chdir=/home/ansible/ansible-playbook/diagnose/visualization/
+      args:
+        warn: false
+
+    - name: Run flask web server
+      command: python3 run.py chdir=/home/ansible/ansible-playbook/diagnose/visualization/
+      args:
+        warn: false
