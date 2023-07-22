@@ -6,6 +6,9 @@ Ansible을 활용한 컨테이너 기반 클라우드 취약점 진단 도구 �
 ![최종구성도](https://github.com/hyecu/capstone/assets/137482878/f057e8cf-dc96-4d99-b2fd-ce81c503ec8f)
 
 
+
+   
+
 [플레이북 실행 시]
 
 scripts 파일은 remote 서버에서 (192.168.16.36) ansible 서버(이하 현재 서버)로 가져옵니다.
