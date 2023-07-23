@@ -5,6 +5,10 @@ Ansible을 활용한 컨테이너 기반 클라우드 취약점 진단 도구 �
 
 ![최종구성도](https://github.com/hyecu/capstone/assets/137482878/f057e8cf-dc96-4d99-b2fd-ce81c503ec8f)  
 
+[결과]  
+![image](https://github.com/hyecu/2022-2-Capstone-Design-Team-DuduEntry/assets/137482878/a0f6c396-168a-40cc-b643-50b59f897c17)  
+(verbose)  
+![image](https://github.com/hyecu/2022-2-Capstone-Design-Team-DuduEntry/assets/137482878/91f345fc-1e8c-41a7-87b1-77570866419b)
 
 
         
